@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Treino Cognitivo PRF</title>
+<style>
+:root{
+  --navy:#17324d; --blue:#2f6b9a; --ink:#263238; --light:#f5f7f9;
+  --line:#d9e0e6; --green:#3d7d5a; --red:#a64545; --gold:#b8862f;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f5;color:var(--ink)}
+main{max-width:620px;margin:auto;min-height:100vh;background:white;padding:0 20px 40px}
+header{margin:0 -20px 20px;padding:22px 20px;background:var(--navy);color:white}
+header small{opacity:.8;font-weight:700;letter-spacing:.08em}
+h1{font-size:23px;margin:6px 0 0}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0;background:white}
+.soft{background:var(--light)}
+.label{font-size:12px;font-weight:bold;text-transform:uppercase;color:#65727d;letter-spacing:.06em}
+.rule{font-size:17px;line-height:1.45;font-weight:700;margin-top:5px}
+button{width:100%;padding:16px;border:0;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;margin-top:10px}
+.primary{background:var(--blue);color:white}
+.secondary{background:#e8eef3;color:var(--navy)}
+.danger{background:#f7e7e7;color:var(--red)}
+select,input[type=range]{width:100%;padding:12px;margin:8px 0 12px;border:1px solid var(--line);border-radius:10px;background:white}
+.status{text-align:center;font-size:18px;font-weight:700;padding:18px;border-radius:12px;background:var(--light);margin:16px 0}
+.count{font-size:52px;text-align:center;font-weight:800;color:var(--navy);padding:24px}
+.hidden{display:none}
+.note{font-size:13px;line-height:1.45;color:#5d6973}
+.answer{padding:12px;border:1px dashed var(--line);border-radius:10px;margin-top:12px}
+#stimulusText{font-size:20px;text-align:center;min-height:40px;color:#9aa3aa}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <small>TREINO COGNITIVO PRF</small>
+  <h1 id="title">Exercício piloto</h1>
+</header>
+
+<section class="card soft">
+  <div class="label">Exercício</div>
+  <div id="exerciseName" class="rule"></div>
+  <div id="instructions" class="note" style="margin-top:10px"></div>
+</section>
+
+<section class="card">
+  <div class="label">Voz</div>
+  <select id="voiceSelect"></select>
+  <div class="label">Velocidade</div>
+  <input id="rate" type="range" min="0.75" max="1.15" step="0.05" value="0.95">
+  <div class="note">Dica: escolha uma voz em português do Brasil e teste antes. O aparelho lembrará sua escolha.</div>
+  <button class="secondary" id="testVoice">🔊 Testar voz</button>
+</section>
+
+<section id="visualTask" class="card hidden">
+  <div class="label">Tarefa visual</div>
+  <div id="visualRule" class="rule"></div>
+  <div class="note" style="margin-top:8px">Deixe esta tela de lado e execute a grade no caderno impresso enquanto o áudio fala.</div>
+</section>
+
+<section class="card">
+  <button class="primary" id="startBtn">▶ INICIAR EXERCÍCIO</button>
+  <button class="danger hidden" id="stopBtn">■ PARAR</button>
+  <div id="status" class="status">Pronto para começar</div>
+  <div id="countdown" class="count hidden"></div>
+  <div id="stimulusText" aria-hidden="true"></div>
+</section>
+
+<section class="card">
+  <div class="label">Depois de terminar</div>
+  <div id="afterText" class="note"></div>
+</section>
+
+<section class="card soft">
+  <div class="label">Abrir outro piloto</div>
+  <button class="secondary" onclick="go('MV01')">MV01 • Memória verbal</button>
+  <button class="secondary" onclick="go('MT01')">MT01 • Memória de trabalho</button>
+  <button class="secondary" onclick="go('AD01')">AD01 • Atenção dividida</button>
+</section>
+</main>
+
+<script>
+const EX = {
+ MV01:{
+   name:"MV01 • Memória verbal",
+   intro:"Você ouvirá 12 palavras, uma única vez. Não anote enquanto escuta. Ao final, escreva todas as palavras que conseguir lembrar.",
+   words:["montanha","garfo","janela","cavalo","relógio","nuvem","sapato","ponte","uva","martelo","chave","areia"],
+   after:"Quando a fala terminar, faça a evocação imediata no caderno. Não repita o áudio antes de concluir.",
+   type:"verbal"
+ },
+ MT01:{
+   name:"MT01 • Memória de trabalho",
+   intro:"O exercício tem três etapas: ordem direta, ordem inversa e sequência mista. Responda no caderno apenas depois de ouvir cada sequência.",
+   type:"working",
+   direct:[["7","2","9"],["4","1","8","6"],["3","9","2","7","5"]],
+   inverse:[["6","3","8"],["9","2","5","1"],["7","4","8","2","6"]],
+   mixed:[["3","A","7","C"],["B","5","2","D","8"],["4","F","1","C","7","A"]],
+   after:"Preencha todas as respostas no caderno. Na etapa mista, coloque primeiro os números em ordem crescente e depois as letras em ordem alfabética."
+ },
+ AD01:{
+   name:"AD01 • Atenção dividida",
+   intro:"Enquanto procura e marca os alvos visuais no caderno, conte mentalmente quantos números ímpares ouvir. Não interrompa a busca visual.",
+   type:"divided",
+   visual:"No caderno: marque todos os 7B.",
+   rule:"Conte quantos números ímpares você ouvir.",
+   nums:[4,7,2,9,5,8,3,6,1,4,7,8,2,5,9,6,3,4,1,8,7,2,5,6,9,3,4,8,1,7,6,2,9,5,4,3,8,7,1,6],
+   after:"Quando ouvir “fim”, pare imediatamente a tarefa visual e anote a quantidade de números ímpares que contou."
+ }
+};
+
+const qs = new URLSearchParams(location.search);
+let code = qs.get("exercicio") || "MV01";
+if(!EX[code]) code="MV01";
+const ex=EX[code];
+
+document.getElementById("title").textContent=ex.name;
+document.getElementById("exerciseName").textContent=ex.name;
+document.getElementById("instructions").textContent=ex.intro;
+document.getElementById("afterText").textContent=ex.after;
+if(ex.type==="divided"){
+  document.getElementById("visualTask").classList.remove("hidden");
+  document.getElementById("visualRule").textContent=ex.visual+" Tarefa auditiva: "+ex.rule;
+}
+
+const voiceSelect=document.getElementById("voiceSelect");
+const rateEl=document.getElementById("rate");
+let voices=[];
+
+function loadVoices(){
+  voices=speechSynthesis.getVoices();
+  voiceSelect.innerHTML="";
+  const pt = voices.filter(v => /pt[-_]?BR/i.test(v.lang));
+  const list = pt.length ? pt : voices.filter(v => /^pt/i.test(v.lang));
+  const finalList = list.length ? list : voices;
+  finalList.forEach(v=>{
+    const o=document.createElement("option");
+    o.value=voices.indexOf(v);
+    o.textContent=`${v.name} (${v.lang})`;
+    voiceSelect.appendChild(o);
+  });
+  const saved=localStorage.getItem("prfVoiceName");
+  if(saved){
+    [...voiceSelect.options].forEach(o=>{
+      const v=voices[Number(o.value)];
+      if(v && v.name===saved) voiceSelect.value=o.value;
+    });
+  }
+  const savedRate=localStorage.getItem("prfRate");
+  if(savedRate) rateEl.value=savedRate;
+}
+speechSynthesis.onvoiceschanged=loadVoices;
+loadVoices();
+
+function selectedVoice(){
+  const v=voices[Number(voiceSelect.value)];
+  if(v) localStorage.setItem("prfVoiceName",v.name);
+  localStorage.setItem("prfRate",rateEl.value);
+  return v;
+}
+function speak(text, rate=1){
+  return new Promise(resolve=>{
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="pt-BR";
+    u.voice=selectedVoice() || null;
+    u.rate=rate*Number(rateEl.value);
+    u.pitch=1;
+    u.volume=1;
+    u.onend=()=>resolve();
+    u.onerror=()=>resolve();
+    speechSynthesis.speak(u);
+  });
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+let cancelled=false;
+async function countDown(){
+  const box=document.getElementById("countdown");
+  box.classList.remove("hidden");
+  for(const n of [3,2,1]){
+    if(cancelled) return false;
+    box.textContent=n;
+    await speak(String(n),0.95);
+    await sleep(300);
+  }
+  box.textContent="COMECE";
+  await speak("Comece.",1);
+  await sleep(500);
+  box.classList.add("hidden");
+  return true;
+}
+function setStatus(t){document.getElementById("status").textContent=t;}
+function runState(on){
+  document.getElementById("startBtn").classList.toggle("hidden",on);
+  document.getElementById("stopBtn").classList.toggle("hidden",!on);
+}
+async function sayToken(t, pause=900){
+  if(cancelled) return;
+  await speak(String(t),0.92);
+  await sleep(pause);
+}
+async function runVerbal(){
+  await speak("Memória verbal. Escute a lista uma única vez. Não anote durante a leitura.",1);
+  await sleep(500);
+  if(!await countDown()) return;
+  setStatus("Escutando a lista");
+  for(const w of ex.words){ if(cancelled) break; await sayToken(w,1050); }
+  if(!cancelled){ await speak("Fim. Agora escreva todas as palavras que conseguir lembrar.",1); }
+}
+async function runWorking(){
+  await speak("Memória de trabalho. Primeiro, ordem direta.",1);
+  await sleep(400);
+  if(!await countDown()) return;
+  for(let i=0;i<ex.direct.length;i++){
+    if(cancelled) break;
+    setStatus(`Ordem direta • sequência ${i+1}`);
+    await speak(`Sequência ${i+1}.`,1);
+    for(const t of ex.direct[i]) await sayToken(t,650);
+    await speak("Responda agora.",1); await sleep(5500);
+  }
+  if(cancelled) return;
+  await speak("Agora, ordem inversa. Repita de trás para frente.",1); await sleep(600);
+  for(let i=0;i<ex.inverse.length;i++){
+    setStatus(`Ordem inversa • sequência ${i+1}`);
+    await speak(`Sequência ${i+1}.`,1);
+    for(const t of ex.inverse[i]) await sayToken(t,650);
+    await speak("Responda agora.",1); await sleep(6000);
+    if(cancelled) break;
+  }
+  if(cancelled) return;
+  await speak("Agora, sequência mista. Números em ordem crescente e depois letras em ordem alfabética.",1); await sleep(700);
+  for(let i=0;i<ex.mixed.length;i++){
+    setStatus(`Mista • sequência ${i+1}`);
+    await speak(`Sequência ${i+1}.`,1);
+    for(const t of ex.mixed[i]){
+      await sayToken(/[A-Z]/.test(t)?`letra ${t}`:t,700);
+    }
+    await speak("Responda agora.",1); await sleep(6500);
+    if(cancelled) break;
+  }
+  if(!cancelled) await speak("Fim do exercício.",1);
+}
+async function runDivided(){
+  await speak("Atenção dividida. Mantenha os olhos no caderno. "+ex.rule+" Faça ao mesmo tempo a tarefa visual indicada.",1);
+  await sleep(600);
+  if(!await countDown()) return;
+  setStatus("Faça a busca visual e conte mentalmente");
+  for(const n of ex.nums){ if(cancelled) break; await sayToken(n,1000); }
+  if(!cancelled) await speak("Fim. Pare a tarefa visual e registre sua resposta auditiva.",1);
+}
+async function start(){
+  cancelled=false; speechSynthesis.cancel(); runState(true); setStatus("Preparando...");
+  try{
+    if(ex.type==="verbal") await runVerbal();
+    else if(ex.type==="working") await runWorking();
+    else await runDivided();
+  }finally{
+    runState(false);
+    setStatus(cancelled?"Exercício interrompido":"Exercício concluído");
+  }
+}
+document.getElementById("startBtn").onclick=start;
+document.getElementById("stopBtn").onclick=()=>{cancelled=true;speechSynthesis.cancel();runState(false);setStatus("Exercício interrompido");};
+document.getElementById("testVoice").onclick=()=>{speechSynthesis.cancel();speak("Esta é a voz selecionada para o seu treino cognitivo.",1);};
+function go(cod){ location.href=`?exercicio=${cod}`; }
+</script>
+</body>
+</html>

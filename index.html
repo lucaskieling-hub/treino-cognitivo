@@ -1,269 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <title>Treino Cognitivo PRF</title>
 <style>
-:root{
-  --navy:#17324d; --blue:#2f6b9a; --ink:#263238; --light:#f5f7f9;
-  --line:#d9e0e6; --green:#3d7d5a; --red:#a64545; --gold:#b8862f;
-}
+:root{--navy:#17324d;--blue:#2f6b9a;--ink:#263238;--light:#f5f7f9;--line:#d9e0e6;--green:#3d7d5a;--red:#a64545;--gold:#b8862f;--purple:#6a5a8e}
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f5;color:var(--ink)}
-main{max-width:620px;margin:auto;min-height:100vh;background:white;padding:0 20px 40px}
-header{margin:0 -20px 20px;padding:22px 20px;background:var(--navy);color:white}
-header small{opacity:.8;font-weight:700;letter-spacing:.08em}
+main{max-width:650px;margin:auto;min-height:100vh;background:#fff;padding:0 20px 45px}
+header{margin:0 -20px 20px;padding:22px 20px;background:var(--navy);color:#fff}
+header small{opacity:.78;font-weight:700;letter-spacing:.08em}
 h1{font-size:23px;margin:6px 0 0}
-.card{border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0;background:white}
+.card{border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0;background:#fff}
 .soft{background:var(--light)}
-.label{font-size:12px;font-weight:bold;text-transform:uppercase;color:#65727d;letter-spacing:.06em}
+.label{font-size:12px;font-weight:700;text-transform:uppercase;color:#65727d;letter-spacing:.06em}
 .rule{font-size:17px;line-height:1.45;font-weight:700;margin-top:5px}
-button{width:100%;padding:16px;border:0;border-radius:12px;font-size:17px;font-weight:700;cursor:pointer;margin-top:10px}
-.primary{background:var(--blue);color:white}
-.secondary{background:#e8eef3;color:var(--navy)}
-.danger{background:#f7e7e7;color:var(--red)}
-select,input[type=range]{width:100%;padding:12px;margin:8px 0 12px;border:1px solid var(--line);border-radius:10px;background:white}
+button{width:100%;padding:15px;border:0;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:9px}
+.primary{background:var(--blue);color:#fff} .secondary{background:#e8eef3;color:var(--navy)} .danger{background:#f7e7e7;color:var(--red)}
+select,input[type=range]{width:100%;padding:12px;margin:8px 0 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
 .status{text-align:center;font-size:18px;font-weight:700;padding:18px;border-radius:12px;background:var(--light);margin:16px 0}
 .count{font-size:52px;text-align:center;font-weight:800;color:var(--navy);padding:24px}
-.hidden{display:none}
-.note{font-size:13px;line-height:1.45;color:#5d6973}
-.answer{padding:12px;border:1px dashed var(--line);border-radius:10px;margin-top:12px}
-#stimulusText{font-size:20px;text-align:center;min-height:40px;color:#9aa3aa}
+.hidden{display:none} .note{font-size:13px;line-height:1.5;color:#5d6973}
+.gridMenu{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.gridMenu button{padding:10px 2px;margin:0;font-size:13px}
+.groupTitle{font-size:14px;font-weight:800;margin-top:15px;color:var(--navy)}
+.pill{display:inline-block;background:#edf3f7;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700;margin-top:5px}
 </style>
 </head>
 <body>
 <main>
-<header>
-  <small>TREINO COGNITIVO PRF</small>
-  <h1 id="title">Exercício piloto</h1>
-</header>
+<header><small>TREINO COGNITIVO PRF</small><h1 id="title">Treino autoaplicável</h1></header>
 
 <section class="card soft">
-  <div class="label">Exercício</div>
-  <div id="exerciseName" class="rule"></div>
-  <div id="instructions" class="note" style="margin-top:10px"></div>
+<div class="label">Exercício</div>
+<div id="exerciseName" class="rule"></div>
+<div id="difficulty" class="pill"></div>
+<div id="instructions" class="note" style="margin-top:10px"></div>
 </section>
 
 <section class="card">
-  <div class="label">Voz</div>
-  <select id="voiceSelect"></select>
-  <div class="label">Velocidade</div>
-  <input id="rate" type="range" min="0.75" max="1.15" step="0.05" value="0.95">
-  <div class="note">Dica: escolha uma voz em português do Brasil e teste antes. O aparelho lembrará sua escolha.</div>
-  <button class="secondary" id="testVoice">🔊 Testar voz</button>
+<div class="label">Voz</div>
+<select id="voiceSelect"></select>
+<div class="label">Velocidade</div>
+<input id="rate" type="range" min="0.75" max="1.15" step="0.05" value="0.95">
+<div class="note">Escolha a voz brasileira que ficou melhor no seu celular. A preferência fica salva neste aparelho.</div>
+<button class="secondary" id="testVoice">🔊 Testar voz</button>
 </section>
 
 <section id="visualTask" class="card hidden">
-  <div class="label">Tarefa visual</div>
-  <div id="visualRule" class="rule"></div>
-  <div class="note" style="margin-top:8px">Deixe esta tela de lado e execute a grade no caderno impresso enquanto o áudio fala.</div>
+<div class="label">Tarefa visual simultânea</div>
+<div id="visualRule" class="rule"></div>
+<div class="note" style="margin-top:8px">Faça a grade no caderno impresso enquanto o celular fala.</div>
 </section>
 
 <section class="card">
-  <button class="primary" id="startBtn">▶ INICIAR EXERCÍCIO</button>
-  <button class="danger hidden" id="stopBtn">■ PARAR</button>
-  <div id="status" class="status">Pronto para começar</div>
-  <div id="countdown" class="count hidden"></div>
-  <div id="stimulusText" aria-hidden="true"></div>
+<button class="primary" id="startBtn">▶ INICIAR EXERCÍCIO</button>
+<button class="danger hidden" id="stopBtn">■ PARAR</button>
+<div id="status" class="status">Pronto para começar</div>
+<div id="countdown" class="count hidden"></div>
 </section>
 
 <section class="card">
-  <div class="label">Depois de terminar</div>
-  <div id="afterText" class="note"></div>
+<div class="label">Depois de terminar</div>
+<div id="afterText" class="note"></div>
 </section>
 
 <section class="card soft">
-  <div class="label">Abrir outro piloto</div>
-  <button class="secondary" onclick="go('MV01')">MV01 • Memória verbal</button>
-  <button class="secondary" onclick="go('MT01')">MT01 • Memória de trabalho</button>
-  <button class="secondary" onclick="go('AD01')">AD01 • Atenção dividida</button>
+<div class="label">Escolher outro exercício</div>
+<div class="groupTitle">Memória verbal</div><div id="menuMV" class="gridMenu"></div>
+<div class="groupTitle">Memória de trabalho</div><div id="menuMT" class="gridMenu"></div>
+<div class="groupTitle">Atenção dividida</div><div id="menuAD" class="gridMenu"></div>
 </section>
 </main>
 
 <script>
-const EX = {
- MV01:{
-   name:"MV01 • Memória verbal",
-   intro:"Você ouvirá 12 palavras, uma única vez. Não anote enquanto escuta. Ao final, escreva todas as palavras que conseguir lembrar.",
-   words:["montanha","garfo","janela","cavalo","relógio","nuvem","sapato","ponte","uva","martelo","chave","areia"],
-   after:"Quando a fala terminar, faça a evocação imediata no caderno. Não repita o áudio antes de concluir.",
-   type:"verbal"
- },
- MT01:{
-   name:"MT01 • Memória de trabalho",
-   intro:"O exercício tem três etapas: ordem direta, ordem inversa e sequência mista. Responda no caderno apenas depois de ouvir cada sequência.",
-   type:"working",
-   direct:[["7","2","9"],["4","1","8","6"],["3","9","2","7","5"]],
-   inverse:[["6","3","8"],["9","2","5","1"],["7","4","8","2","6"]],
-   mixed:[["3","A","7","C"],["B","5","2","D","8"],["4","F","1","C","7","A"]],
-   after:"Preencha todas as respostas no caderno. Na etapa mista, coloque primeiro os números em ordem crescente e depois as letras em ordem alfabética."
- },
- AD01:{
-   name:"AD01 • Atenção dividida",
-   intro:"Enquanto procura e marca os alvos visuais no caderno, conte mentalmente quantos números ímpares ouvir. Não interrompa a busca visual.",
-   type:"divided",
-   visual:"No caderno: marque todos os 7B.",
-   rule:"Conte quantos números ímpares você ouvir.",
-   nums:[4,7,2,9,5,8,3,6,1,4,7,8,2,5,9,6,3,4,1,8,7,2,5,6,9,3,4,8,1,7,6,2,9,5,4,3,8,7,1,6],
-   after:"Quando ouvir “fim”, pare imediatamente a tarefa visual e anote a quantidade de números ímpares que contou."
- }
-};
-
+const DATA = {"MV": {"MV01": ["montanha", "garfo", "janela", "cavalo", "relógio", "nuvem", "sapato", "ponte", "uva", "martelo", "chave", "areia"], "MV02": ["farol", "cadeira", "rio", "camisa", "violão", "pedra", "avião", "escada", "livro", "abacaxi", "espelho", "moeda"], "MV03": ["copo", "cachorro", "tapete", "tesoura", "balão", "praia", "anel", "barco", "tijolo", "sino", "panela", "borboleta", "grama"], "MV04": ["caderno", "pincel", "lâmpada", "morango", "trilho", "torre", "pato", "bolsa", "chuva", "óculos", "rede", "banana", "tambor", "garrafa"], "MV05": ["estrela", "casaco", "escova", "formiga", "travesseiro", "ônibus", "folha", "caixa", "fogão", "piano", "porta", "navio"], "MV06": ["colher", "bolo", "bicicleta", "caneta", "gato", "melancia", "telefone", "chapéu", "carro", "corda", "tomate", "sorvete", "flauta"], "MV07": ["balde", "lago", "toalha", "queijo", "mochila", "prato", "jardim", "vela", "ponte", "garfo", "livro", "farol", "areia", "chave"], "MV08": ["avião", "uva", "cadeira", "pincel", "nuvem", "barco", "martelo", "telefone", "grama", "espelho", "sapato", "sino"], "MV09": ["janela", "trilho", "morango", "panela", "cavalo", "moeda", "chuva", "escada", "violão", "folha", "copo", "tapete", "carro"], "MV10": ["relógio", "borboleta", "torre", "camisa", "banana", "anel", "foguete", "caderno", "colher", "pedra", "lâmpada", "praia", "rede", "bolo", "tesoura"]}, "MT": {"MT01": {"direct": [["7", "2", "9"], ["4", "1", "8", "6"], ["3", "9", "2", "7", "5"]], "inverse": [["6", "3", "8"], ["9", "2", "5", "1"], ["7", "4", "8", "2", "6"]], "mixed": [["3", "A", "7", "C"], ["B", "5", "2", "D", "8"], ["4", "F", "1", "C", "7", "A"]]}, "MT02": {"direct": [["5", "8", "2"], ["7", "3", "9", "1"], ["6", "2", "8", "4", "7"], ["9", "1", "5", "3", "8", "2"]], "inverse": [["4", "7", "1"], ["8", "2", "6", "9"], ["3", "7", "5", "1", "8"]], "mixed": [["2", "B", "6", "E"], ["D", "4", "1", "G", "7"], ["5", "A", "8", "C", "2", "F"]]}, "MT03": {"direct": [["3", "6", "9", "2"], ["8", "1", "4", "7", "5"], ["2", "9", "3", "6", "1", "8"]], "inverse": [["5", "2", "7", "4"], ["1", "8", "3", "9", "6"], ["7", "4", "2", "8", "5", "1"]], "mixed": [["C", "3", "A", "7", "5"], ["6", "F", "2", "B", "9", "D"], ["H", "4", "1", "E", "7", "C", "3"]]}, "MT04": {"direct": [["4", "9", "1", "7"], ["2", "6", "8", "3", "5"], ["9", "4", "1", "6", "2", "8"]], "inverse": [["8", "5", "2", "9"], ["3", "7", "1", "6", "4"], ["5", "9", "2", "7", "3", "8"]], "mixed": [["4", "D", "1", "A", "8"], ["B", "7", "3", "F", "2", "C"], ["6", "G", "1", "D", "9", "A", "4"]]}, "MT05": {"direct": [["6", "1", "8", "3"], ["5", "9", "2", "7", "4"], ["3", "8", "1", "6", "9", "2"]], "inverse": [["7", "2", "9", "4"], ["6", "1", "8", "3", "5"], ["2", "7", "4", "9", "1", "6"]], "mixed": [["A", "5", "C", "2", "8"], ["7", "D", "1", "B", "6", "F"], ["E", "3", "9", "A", "2", "G", "5"]]}, "MT06": {"direct": [["8", "3", "6", "1"], ["2", "7", "4", "9", "5"], ["6", "1", "8", "2", "7", "3", "9"]], "inverse": [["4", "8", "1", "5"], ["9", "2", "6", "3", "7"], ["5", "1", "8", "4", "2", "9", "6"]], "mixed": [["6", "B", "3", "E", "1"], ["C", "8", "2", "A", "7", "D"], ["4", "F", "9", "B", "1", "H", "6"]]}, "MT07": {"direct": [["2", "9", "5", "7"], ["8", "4", "1", "6", "3"], ["7", "2", "9", "4", "6", "1", "8"]], "inverse": [["3", "8", "5", "1"], ["7", "4", "9", "2", "6"], ["1", "6", "3", "8", "5", "2", "9"]], "mixed": [["D", "2", "7", "A", "5"], ["3", "G", "1", "C", "8", "F"], ["9", "B", "4", "H", "2", "D", "6"]]}, "MT08": {"direct": [["9", "4", "2", "8"], ["1", "7", "5", "3", "6"], ["4", "8", "2", "9", "1", "7", "5"]], "inverse": [["6", "2", "8", "4"], ["5", "9", "1", "7", "3"], ["8", "3", "6", "1", "9", "4", "2"]], "mixed": [["3", "C", "8", "A", "1"], ["F", "6", "2", "D", "9", "B"], ["5", "H", "1", "E", "7", "C", "4"]]}, "MT09": {"direct": [["5", "1", "9", "6"], ["3", "8", "2", "7", "4"], ["9", "2", "6", "1", "8", "3", "7"]], "inverse": [["7", "4", "1", "9"], ["2", "8", "5", "3", "6"], ["6", "1", "9", "4", "7", "2", "8"]], "mixed": [["B", "4", "7", "E", "2"], ["8", "A", "3", "F", "1", "D"], ["C", "6", "2", "H", "9", "B", "5"]]}, "MT10": {"direct": [["7", "3", "8", "1"], ["6", "2", "9", "4", "5"], ["1", "8", "3", "7", "2", "9", "6"]], "inverse": [["9", "5", "2", "7"], ["4", "1", "8", "6", "3"], ["3", "9", "1", "7", "4", "8", "2"]], "mixed": [["5", "D", "1", "G", "8"], ["A", "7", "3", "F", "2", "C"], ["9", "B", "4", "H", "1", "E", "6"]]}}, "AD": {"AD01": {"visual": "marque todos os 7B", "rule": "conte quantos números ímpares você ouvir", "nums": [4, 7, 2, 9, 5, 8, 3, 6, 1, 4, 7, 8, 2, 5, 9, 6, 3, 4, 1, 8, 7, 2, 5, 6, 9, 3, 4, 8, 1, 7, 6, 2, 9, 5, 4, 3, 8, 7, 1, 6]}, "AD02": {"visual": "marque todos os A3", "rule": "conte quantas vezes o número 2 for imediatamente seguido por um número par", "nums": [2, 8, 5, 2, 3, 7, 2, 4, 9, 1, 2, 6, 5, 3, 2, 7, 8, 2, 2, 4, 6, 9, 2, 1, 5, 2, 8, 3, 4, 2, 6, 7, 1, 2, 5, 9, 2, 4, 8, 3]}, "AD03": {"visual": "marque todos os X5", "rule": "conte quantos números maiores que 6 você ouvir", "nums": [8, 3, 7, 2, 9, 5, 6, 8, 1, 7, 4, 9, 3, 6, 8, 5, 2, 7, 9, 1, 4, 8, 6, 3, 7, 5, 9, 2, 8, 4, 1, 7, 6, 9, 3, 8, 5, 2, 7, 4]}, "AD04": {"visual": "marque todos os C2", "rule": "conte quantos números menores que 4 você ouvir", "nums": [1, 5, 2, 8, 3, 6, 4, 2, 9, 1, 7, 3, 5, 2, 8, 6, 1, 4, 3, 9, 2, 7, 5, 1, 8, 3, 6, 2, 4, 9, 1, 5, 3, 7, 2, 8, 4, 1, 6, 3]}, "AD05": {"visual": "marque todos os D4", "rule": "conte quantas vezes o número 1 for imediatamente seguido por um número ímpar", "nums": [1, 7, 4, 1, 8, 2, 1, 5, 6, 3, 1, 9, 4, 1, 2, 7, 1, 3, 8, 5, 1, 6, 2, 1, 7, 9, 4, 1, 5, 3, 8, 1, 4, 6, 1, 9, 2, 5, 1, 3]}, "AD06": {"visual": "marque todos os 8K", "rule": "conte quantos números pares você ouvir", "nums": [4, 7, 2, 9, 6, 3, 8, 1, 5, 4, 2, 7, 6, 9, 8, 3, 1, 4, 6, 5, 2, 8, 7, 3, 4, 9, 6, 1, 8, 2, 5, 4, 7, 6, 3, 8, 2, 9, 4, 1]}, "AD07": {"visual": "marque todos os K8", "rule": "conte quantas vezes o número 3 for imediatamente seguido por um número maior que 5", "nums": [3, 8, 2, 3, 4, 7, 3, 9, 1, 5, 3, 6, 2, 8, 3, 7, 4, 3, 2, 9, 3, 8, 5, 1, 3, 6, 7, 2, 3, 9, 4, 8, 3, 5, 1, 3, 7, 6, 2, 9]}, "AD08": {"visual": "marque todos os B7", "rule": "conte quantos números menores que 5 você ouvir", "nums": [4, 7, 2, 9, 1, 8, 3, 6, 5, 4, 2, 7, 1, 9, 3, 8, 4, 6, 2, 5, 1, 7, 3, 9, 4, 8, 2, 6, 1, 5, 3, 7, 4, 9, 2, 8, 1, 6, 3, 5]}, "AD09": {"visual": "marque todos os 3A", "rule": "conte quantas vezes o número 4 for imediatamente seguido por um número par", "nums": [4, 8, 3, 4, 7, 2, 4, 6, 9, 1, 4, 2, 5, 3, 4, 9, 8, 4, 4, 6, 7, 2, 4, 8, 1, 5, 4, 2, 9, 3, 4, 6, 7, 1, 4, 8, 5, 2, 4, 6]}, "AD10": {"visual": "marque todos os 2C", "rule": "conte quantos números maiores que 7 você ouvir", "nums": [8, 4, 9, 2, 7, 5, 8, 3, 9, 6, 1, 8, 4, 7, 9, 2, 5, 8, 6, 3, 9, 1, 7, 8, 4, 6, 9, 2, 5, 8, 3, 7, 9, 4, 1, 8, 6, 2, 9, 5]}}};
 const qs = new URLSearchParams(location.search);
-let code = qs.get("exercicio") || "MV01";
-if(!EX[code]) code="MV01";
-const ex=EX[code];
+let code = (qs.get("exercicio") || "MV01").toUpperCase();
 
-document.getElementById("title").textContent=ex.name;
-document.getElementById("exerciseName").textContent=ex.name;
-document.getElementById("instructions").textContent=ex.intro;
-document.getElementById("afterText").textContent=ex.after;
+function level(n){
+ if(n<=3) return "Nível 1 • Base";
+ if(n<=6) return "Nível 2 • Progressão";
+ if(n<=8) return "Nível 3 • Interferência";
+ return "Nível 4 • Alta exigência";
+}
+function getEx(code){
+ const group=code.slice(0,2), n=code.slice(2);
+ if(group==="MV" && DATA.MV[code]) return {type:"verbal",words:DATA.MV[code]};
+ if(group==="MT" && DATA.MT[code]) return {type:"working",...DATA.MT[code]};
+ if(group==="AD" && DATA.AD[code]) return {type:"divided",...DATA.AD[code]};
+ return null;
+}
+let ex=getEx(code);
+if(!ex){code="MV01";ex=getEx(code)}
+const num=Number(code.slice(2));
+document.getElementById("title").textContent=code+" • "+({MV:"Memória verbal",MT:"Memória de trabalho",AD:"Atenção dividida"})[code.slice(0,2)];
+document.getElementById("exerciseName").textContent=document.getElementById("title").textContent;
+document.getElementById("difficulty").textContent=level(num);
+
+if(ex.type==="verbal"){
+ document.getElementById("instructions").textContent=`Você ouvirá ${ex.words.length} palavras, uma única vez. Não anote enquanto escuta. Ao final, faça a evocação imediata no caderno.`;
+ document.getElementById("afterText").textContent="Escreva todas as palavras que lembrar. Faça a evocação tardia no intervalo indicado pelo caderno sem repetir o áudio.";
+}
+if(ex.type==="working"){
+ document.getElementById("instructions").textContent="Você fará ordem direta, ordem inversa e sequência mista. Cada sequência será apresentada uma única vez.";
+ document.getElementById("afterText").textContent="Na etapa mista: números em ordem crescente e depois letras em ordem alfabética. Registre o maior span correto.";
+}
 if(ex.type==="divided"){
-  document.getElementById("visualTask").classList.remove("hidden");
-  document.getElementById("visualRule").textContent=ex.visual+" Tarefa auditiva: "+ex.rule;
+ document.getElementById("instructions").textContent="Execute simultaneamente a tarefa visual do caderno e a regra auditiva. Não pare uma tarefa para fazer a outra.";
+ document.getElementById("afterText").textContent="Quando ouvir “fim”, pare imediatamente a busca visual e registre a resposta auditiva.";
+ document.getElementById("visualTask").classList.remove("hidden");
+ document.getElementById("visualRule").textContent="No caderno: "+ex.visual+". Auditivo: "+ex.rule+".";
 }
 
-const voiceSelect=document.getElementById("voiceSelect");
-const rateEl=document.getElementById("rate");
+const voiceSelect=document.getElementById("voiceSelect"), rateEl=document.getElementById("rate");
 let voices=[];
-
 function loadVoices(){
-  voices=speechSynthesis.getVoices();
-  voiceSelect.innerHTML="";
-  const pt = voices.filter(v => /pt[-_]?BR/i.test(v.lang));
-  const list = pt.length ? pt : voices.filter(v => /^pt/i.test(v.lang));
-  const finalList = list.length ? list : voices;
-  finalList.forEach(v=>{
-    const o=document.createElement("option");
-    o.value=voices.indexOf(v);
-    o.textContent=`${v.name} (${v.lang})`;
-    voiceSelect.appendChild(o);
-  });
-  const saved=localStorage.getItem("prfVoiceName");
-  if(saved){
-    [...voiceSelect.options].forEach(o=>{
-      const v=voices[Number(o.value)];
-      if(v && v.name===saved) voiceSelect.value=o.value;
-    });
-  }
-  const savedRate=localStorage.getItem("prfRate");
-  if(savedRate) rateEl.value=savedRate;
+ voices=speechSynthesis.getVoices();
+ voiceSelect.innerHTML="";
+ const pt=voices.filter(v=>/pt[-_]?BR/i.test(v.lang));
+ const list=pt.length?pt:voices.filter(v=>/^pt/i.test(v.lang));
+ (list.length?list:voices).forEach(v=>{
+  const o=document.createElement("option"); o.value=voices.indexOf(v); o.textContent=`${v.name} (${v.lang})`; voiceSelect.appendChild(o);
+ });
+ const saved=localStorage.getItem("prfVoiceName");
+ if(saved) [...voiceSelect.options].forEach(o=>{const v=voices[Number(o.value)];if(v&&v.name===saved)voiceSelect.value=o.value});
+ const sr=localStorage.getItem("prfRate"); if(sr) rateEl.value=sr;
 }
-speechSynthesis.onvoiceschanged=loadVoices;
-loadVoices();
+speechSynthesis.onvoiceschanged=loadVoices; loadVoices();
 
 function selectedVoice(){
-  const v=voices[Number(voiceSelect.value)];
-  if(v) localStorage.setItem("prfVoiceName",v.name);
-  localStorage.setItem("prfRate",rateEl.value);
-  return v;
+ const v=voices[Number(voiceSelect.value)];
+ if(v)localStorage.setItem("prfVoiceName",v.name);
+ localStorage.setItem("prfRate",rateEl.value); return v;
 }
-function speak(text, rate=1){
-  return new Promise(resolve=>{
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang="pt-BR";
-    u.voice=selectedVoice() || null;
-    u.rate=rate*Number(rateEl.value);
-    u.pitch=1;
-    u.volume=1;
-    u.onend=()=>resolve();
-    u.onerror=()=>resolve();
-    speechSynthesis.speak(u);
-  });
+function speak(text,rate=1){
+ return new Promise(resolve=>{
+  const u=new SpeechSynthesisUtterance(text); u.lang="pt-BR"; u.voice=selectedVoice()||null;
+  u.rate=rate*Number(rateEl.value); u.pitch=1; u.volume=1; u.onend=resolve; u.onerror=resolve; speechSynthesis.speak(u);
+ });
 }
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-
 let cancelled=false;
+function setStatus(t){document.getElementById("status").textContent=t}
+function runState(on){document.getElementById("startBtn").classList.toggle("hidden",on);document.getElementById("stopBtn").classList.toggle("hidden",!on)}
+
 async function countDown(){
-  const box=document.getElementById("countdown");
-  box.classList.remove("hidden");
-  for(const n of [3,2,1]){
-    if(cancelled) return false;
-    box.textContent=n;
-    await speak(String(n),0.95);
-    await sleep(300);
-  }
-  box.textContent="COMECE";
-  await speak("Comece.",1);
-  await sleep(500);
-  box.classList.add("hidden");
-  return true;
+ const box=document.getElementById("countdown");box.classList.remove("hidden");
+ for(const n of [3,2,1]){if(cancelled)return false;box.textContent=n;await speak(String(n),.95);await sleep(300)}
+ box.textContent="COMECE";await speak("Comece.",1);await sleep(450);box.classList.add("hidden");return true;
 }
-function setStatus(t){document.getElementById("status").textContent=t;}
-function runState(on){
-  document.getElementById("startBtn").classList.toggle("hidden",on);
-  document.getElementById("stopBtn").classList.toggle("hidden",!on);
+async function token(t,pause=900){
+ if(cancelled)return; await speak(String(t),.92); await sleep(pause);
 }
-async function sayToken(t, pause=900){
-  if(cancelled) return;
-  await speak(String(t),0.92);
-  await sleep(pause);
-}
+
 async function runVerbal(){
-  await speak("Memória verbal. Escute a lista uma única vez. Não anote durante a leitura.",1);
-  await sleep(500);
-  if(!await countDown()) return;
-  setStatus("Escutando a lista");
-  for(const w of ex.words){ if(cancelled) break; await sayToken(w,1050); }
-  if(!cancelled){ await speak("Fim. Agora escreva todas as palavras que conseguir lembrar.",1); }
+ await speak(`Memória verbal. Você ouvirá ${ex.words.length} palavras, uma única vez. Não anote durante a leitura.`,1);
+ await sleep(500); if(!await countDown())return;
+ setStatus("Escutando a lista");
+ const pause = num<=3?1150:num<=6?1050:950;
+ for(const w of ex.words){if(cancelled)break;await token(w,pause)}
+ if(!cancelled)await speak("Fim. Agora escreva todas as palavras que conseguir lembrar.",1);
 }
+
 async function runWorking(){
-  await speak("Memória de trabalho. Primeiro, ordem direta.",1);
-  await sleep(400);
-  if(!await countDown()) return;
-  for(let i=0;i<ex.direct.length;i++){
-    if(cancelled) break;
-    setStatus(`Ordem direta • sequência ${i+1}`);
-    await speak(`Sequência ${i+1}.`,1);
-    for(const t of ex.direct[i]) await sayToken(t,650);
-    await speak("Responda agora.",1); await sleep(5500);
-  }
-  if(cancelled) return;
-  await speak("Agora, ordem inversa. Repita de trás para frente.",1); await sleep(600);
-  for(let i=0;i<ex.inverse.length;i++){
-    setStatus(`Ordem inversa • sequência ${i+1}`);
-    await speak(`Sequência ${i+1}.`,1);
-    for(const t of ex.inverse[i]) await sayToken(t,650);
-    await speak("Responda agora.",1); await sleep(6000);
-    if(cancelled) break;
-  }
-  if(cancelled) return;
-  await speak("Agora, sequência mista. Números em ordem crescente e depois letras em ordem alfabética.",1); await sleep(700);
-  for(let i=0;i<ex.mixed.length;i++){
-    setStatus(`Mista • sequência ${i+1}`);
-    await speak(`Sequência ${i+1}.`,1);
-    for(const t of ex.mixed[i]){
-      await sayToken(/[A-Z]/.test(t)?`letra ${t}`:t,700);
-    }
-    await speak("Responda agora.",1); await sleep(6500);
-    if(cancelled) break;
-  }
-  if(!cancelled) await speak("Fim do exercício.",1);
+ await speak("Memória de trabalho. Primeiro, ordem direta.",1); await sleep(400); if(!await countDown())return;
+ const p = num<=3?700:num<=6?650:600;
+ for(let i=0;i<ex.direct.length;i++){if(cancelled)break;setStatus(`Direta • sequência ${i+1}`);await speak(`Sequência ${i+1}.`,1);for(const t of ex.direct[i])await token(t,p);await speak("Responda agora.",1);await sleep(5200)}
+ if(cancelled)return;
+ await speak("Agora, ordem inversa. Responda de trás para frente.",1);await sleep(500);
+ for(let i=0;i<ex.inverse.length;i++){if(cancelled)break;setStatus(`Inversa • sequência ${i+1}`);await speak(`Sequência ${i+1}.`,1);for(const t of ex.inverse[i])await token(t,p);await speak("Responda agora.",1);await sleep(5800)}
+ if(cancelled)return;
+ await speak("Agora, sequência mista. Primeiro números em ordem crescente. Depois letras em ordem alfabética.",1);await sleep(650);
+ for(let i=0;i<ex.mixed.length;i++){if(cancelled)break;setStatus(`Mista • sequência ${i+1}`);await speak(`Sequência ${i+1}.`,1);for(const t of ex.mixed[i])await token(/[A-Z]/.test(t)?`letra ${t}`:t,p+40);await speak("Responda agora.",1);await sleep(6500)}
+ if(!cancelled)await speak("Fim do exercício.",1);
 }
+
 async function runDivided(){
-  await speak("Atenção dividida. Mantenha os olhos no caderno. "+ex.rule+" Faça ao mesmo tempo a tarefa visual indicada.",1);
-  await sleep(600);
-  if(!await countDown()) return;
-  setStatus("Faça a busca visual e conte mentalmente");
-  for(const n of ex.nums){ if(cancelled) break; await sayToken(n,1000); }
-  if(!cancelled) await speak("Fim. Pare a tarefa visual e registre sua resposta auditiva.",1);
+ await speak("Atenção dividida. Mantenha os olhos no caderno. "+ex.rule+". Faça ao mesmo tempo a tarefa visual indicada.",1);
+ await sleep(550);if(!await countDown())return;setStatus("Busca visual + contagem auditiva");
+ const pause=num<=3?1100:num<=6?1000:900;
+ for(const n of ex.nums){if(cancelled)break;await token(n,pause)}
+ if(!cancelled)await speak("Fim. Pare a tarefa visual e registre sua resposta auditiva.",1);
 }
+
 async function start(){
-  cancelled=false; speechSynthesis.cancel(); runState(true); setStatus("Preparando...");
-  try{
-    if(ex.type==="verbal") await runVerbal();
-    else if(ex.type==="working") await runWorking();
-    else await runDivided();
-  }finally{
-    runState(false);
-    setStatus(cancelled?"Exercício interrompido":"Exercício concluído");
-  }
+ cancelled=false;speechSynthesis.cancel();runState(true);setStatus("Preparando...");
+ try{if(ex.type==="verbal")await runVerbal();else if(ex.type==="working")await runWorking();else await runDivided()}
+ finally{runState(false);setStatus(cancelled?"Exercício interrompido":"Exercício concluído")}
 }
 document.getElementById("startBtn").onclick=start;
-document.getElementById("stopBtn").onclick=()=>{cancelled=true;speechSynthesis.cancel();runState(false);setStatus("Exercício interrompido");};
-document.getElementById("testVoice").onclick=()=>{speechSynthesis.cancel();speak("Esta é a voz selecionada para o seu treino cognitivo.",1);};
-function go(cod){ location.href=`?exercicio=${cod}`; }
+document.getElementById("stopBtn").onclick=()=>{cancelled=true;speechSynthesis.cancel();runState(false);setStatus("Exercício interrompido")};
+document.getElementById("testVoice").onclick=()=>{speechSynthesis.cancel();speak("Esta é a voz selecionada para o seu treino cognitivo.",1)};
+
+function nav(c){location.href="?exercicio="+c}
+for(const g of ["MV","MT","AD"]){
+ const box=document.getElementById("menu"+g);
+ for(let i=1;i<=10;i++){const cod=g+String(i).padStart(2,"0");const b=document.createElement("button");b.className="secondary";b.textContent=String(i).padStart(2,"0");b.onclick=()=>nav(cod);box.appendChild(b)}
+}
 </script>
 </body>
 </html>

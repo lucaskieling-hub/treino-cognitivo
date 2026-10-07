@@ -1,14 +1,8 @@
-# Treino Cognitivo PRF - versão completa
+# Treino Cognitivo PRF - 12 semanas
 
-Contém 30 exercícios autoaplicáveis:
+48 exercícios auditivos autoaplicáveis:
+- MV01-MV16
+- MT01-MT16
+- AD01-AD16
 
-- MV01–MV10: memória verbal
-- MT01–MT10: memória de trabalho
-- AD01–AD10: atenção dividida
-
-Use:
-`?exercicio=MV01`
-`?exercicio=MT01`
-`?exercicio=AD01`
-
-Para atualizar o site, substitua o `index.html` do repositório pelo arquivo desta pasta.
+Substitua o index.html no repositório atual. O endereço do GitHub Pages permanece o mesmo.
